@@ -1,0 +1,40 @@
+blueprint:
+  name: Contact
+  description: Turn a switch into a momentary contact action (On -> Off)
+  domain: automation
+  input: 
+    inter:
+      name: interrupteur
+      description: interrupteur pilote
+      selector:
+        entity:
+          filter:
+            domain: switch
+          multiple: true
+    timer:
+      name: timing
+      description: durée en millisecondes d'allumage
+      default: 500
+      selector:
+        number:
+          min: 0
+          max: 300000
+          unit_of_measurement: "ms"
+          mode: slider
+triggers:
+  - trigger: state
+    entity_id: !input inter
+    from: "off"
+    to: "on"
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: !input timer
+    trigger: state
+conditions: []
+actions:
+  - action: switch.turn_off
+    target:
+      entity_id: "{{ trigger.entity_id }}"
+mode: single
